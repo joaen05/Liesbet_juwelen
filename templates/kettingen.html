@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Kettingen{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Kettingen</h1>
+        {% if 'ingelogd' in session and session['ingelogd'] %}
+        <a href="/kettingen/toevoegen" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+            Ketting toevoegen
+        </a>
+        {% endif %}
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Hier komen de kettingen -->
+        <p>Kettingen content komt hier</p>
+    </div>
+</div>
+{% endblock %}
