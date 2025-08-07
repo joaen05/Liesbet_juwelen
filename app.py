@@ -523,5 +523,36 @@ def ketting_bewerken(ketting_id):
                 conn.close()
 
 
+@app.route('/kettingen/verwijderen/<int:ketting_id>', methods=['POST'])
+def ketting_verwijderen(ketting_id):
+    if 'ingelogd' not in session or not session['ingelogd']:
+        return redirect(url_for('beheren'))
+
+    conn = get_db_connection()
+    if not conn:
+        flash('Databaseverbinding mislukt', 'error')
+        return redirect(url_for('kettingen'))
+
+    try:
+        cursor = conn.cursor()
+
+        # Eerst de kleurvarianten verwijderen (vanwege foreign key constraint)
+        cursor.execute("DELETE FROM ketting_kleuren WHERE ketting_id = %s", (ketting_id,))
+
+        # Dan de ketting zelf verwijderen
+        cursor.execute("DELETE FROM kettingen WHERE id = %s", (ketting_id,))
+
+        conn.commit()
+        flash('Ketting succesvol verwijderd!', 'success')
+    except Exception as e:
+        conn.rollback()
+        print(f"FOUT bij verwijderen ketting: {str(e)}")
+        flash('Er is een fout opgetreden bij het verwijderen van de ketting', 'error')
+    finally:
+        if conn:
+            conn.close()
+
+    return redirect(url_for('kettingen'))
+
 if __name__ == '__main__':
     app.run(debug=True)

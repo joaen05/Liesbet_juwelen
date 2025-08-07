@@ -54,6 +54,9 @@
                     <div class="flex space-x-2">
                         {% if 'ingelogd' in session and session['ingelogd'] %}
                         <a href="{{ url_for('ketting_bewerken', ketting_id=ketting.id) }}" class="text-green-600 hover:text-green-800 font-medium">Bewerken</a>
+                        <form action="{{ url_for('ketting_verwijderen', ketting_id=ketting.id) }}" method="POST" onsubmit="return confirm('Weet je zeker dat je deze ketting wilt verwijderen?');">
+                            <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Verwijderen</button>
+                        </form>
                         {% endif %}
                     </div>
                 </div>
