@@ -10,10 +10,16 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        /* Voeg toe aan bestaande style tag */
+        input:read-only {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-<nav class="bg-blue-600 p-4 shadow-md rounded-b-lg">
+<nav class="bg-blue-600 p-4 shadow-md rounded-b-lg sticky top-0 z-10">
     <div class="container mx-auto flex flex-wrap items-center justify-between">
         <a href="/"
            class="text-white text-2xl font-bold rounded-md p-2 hover:bg-blue-700 transition-colors duration-200">Jewerly
@@ -70,6 +76,15 @@
 
                     <div id="user-dropdown-menu"
                          class="absolute right-0 hidden bg-white text-gray-800 rounded-lg shadow-xl py-2 mt-2 z-20 w-48 border border-gray-200 transition-all duration-200">
+                        <a href="/profiel"
+                           class="flex items-center px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">
+                            <span>Gegevens bewerken</span>
+                            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </a>
                         <a href="/uitloggen"
                            class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Uitloggen</a>
                     </div>
