@@ -597,13 +597,9 @@ def profiel_wachtwoord_bewerken():
             conn.close()
 
             # Configureer static files voor uploads
-@app.route('/static/uploads/<filename>')
-def serve_uploaded_file(filename):
-    upload_dir = '/var/data/uploads'
-    # Beveiliging tegen directory traversal
-    if '..' in filename or filename.startswith('/'):
-        abort(404)
-    return send_from_directory(upload_dir, filename, mimetype='image/jpeg')
+@app.route('/static/uploads/<path:filename>')
+def serve_uploads(filename):
+    return send_from_directory('/var/data/uploads', filename)
 
 
 if __name__ == '__main__':
