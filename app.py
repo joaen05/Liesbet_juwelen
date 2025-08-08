@@ -1,5 +1,6 @@
 import secrets
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory, \
+    abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 from psycopg2.extras import DictCursor
@@ -39,30 +40,29 @@ def get_db_connection():
 
 
 def save_image(image_file, target_size=(800, 800), quality=85):
-    """Sla afbeelding op met correcte oriëntatie en compressie"""
     if not image_file:
         return None
 
     filename = secrets.token_hex(8) + ".jpg"
-    upload_dir = os.path.join('static', 'uploads')
+    # Gebruik het persistent disk pad
+    upload_dir = '/var/data/uploads'
     os.makedirs(upload_dir, exist_ok=True)
     filepath = os.path.join(upload_dir, filename)
 
     try:
         img = Image.open(image_file.stream)
 
-        # Corrigeer EXIF rotatie
+        # Bestaande EXIF rotatie correctie
         if hasattr(img, '_getexif'):
             exif = img._getexif()
             if exif:
                 orientation = exif.get(0x0112)
-                if orientation:
-                    if orientation == 3:
-                        img = img.rotate(180, expand=True)
-                    elif orientation == 6:
-                        img = img.rotate(270, expand=True)
-                    elif orientation == 8:
-                        img = img.rotate(90, expand=True)
+                if orientation == 3:
+                    img = img.rotate(180, expand=True)
+                elif orientation == 6:
+                    img = img.rotate(270, expand=True)
+                elif orientation == 7:
+                    img = img.rotate(90, expand=True)
 
         # Converteer naar RGB indien nodig
         if img.mode in ('RGBA', 'P'):
@@ -73,7 +73,9 @@ def save_image(image_file, target_size=(800, 800), quality=85):
 
         # Opslaan met compressie
         img.save(filepath, 'JPEG', quality=quality, optimize=True)
-        return filename
+
+        # Retourneer relatief pad voor web toegang
+        return f"/static/uploads/{filename}"
 
     except Exception as e:
         print(f"Fout bij verwerken afbeelding: {e}")
@@ -593,6 +595,15 @@ def profiel_wachtwoord_bewerken():
     finally:
         if conn:
             conn.close()
+
+            # Configureer static files voor uploads
+@app.route('/static/uploads/<filename>')
+def serve_uploaded_file(filename):
+    upload_dir = '/var/data/uploads'
+    # Beveiliging tegen directory traversal
+    if '..' in filename or filename.startswith('/'):
+        abort(404)
+    return send_from_directory(upload_dir, filename, mimetype='image/jpeg')
 
 
 if __name__ == '__main__':
