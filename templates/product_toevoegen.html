@@ -46,7 +46,8 @@
                 </button>
             </div>
 
-            <div id="kleurvariant-0" class="kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+            <div id="kleurvariant-0"
+                 class="kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
                 <div>
                     <label for="kleur_naam_0" class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
                     <input type="text" id="kleur_naam_0" name="kleur_naam[]" required
@@ -58,13 +59,15 @@
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
                 <div>
-                    <label for="kleur_hover_foto_0" class="block text-sm font-medium text-gray-700 mb-1">Hover foto*</label>
+                    <label for="kleur_hover_foto_0" class="block text-sm font-medium text-gray-700 mb-1">Hover
+                        foto*</label>
                     <input type="file" id="kleur_hover_foto_0" name="kleur_hover_foto[]" accept="image/*" required
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
             </div>
 
-            <div id="kleur-template" class="hidden kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+            <div id="kleur-template"
+                 class="hidden kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
                     <input type="text" name="kleur_naam[]"
@@ -80,14 +83,16 @@
                     <input type="file" name="kleur_hover_foto[]" accept="image/*"
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
-                <button type="button" class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
+                <button type="button"
+                        class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
                     Verwijder deze kleur
                 </button>
             </div>
         </div>
 
         <div class="flex justify-end space-x-4 pt-4">
-            <a href="{{ url_for('home') }}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            <a href="{{ url_for('home') }}"
+               class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                 Annuleren
             </a>
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
@@ -98,67 +103,67 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    let kleurIndex = document.querySelectorAll('.kleurvariant').length;
+    document.addEventListener('DOMContentLoaded', function () {
+        let kleurIndex = document.querySelectorAll('.kleurvariant').length;
 
-    document.getElementById('voeg-kleur-toe').addEventListener('click', function() {
-        const template = document.getElementById('kleur-template');
-        const newKleur = template.cloneNode(true);
-        newKleur.classList.remove('hidden');
-        newKleur.removeAttribute('id');
-        newKleur.setAttribute('id', `kleurvariant-${kleurIndex}`);
+        document.getElementById('voeg-kleur-toe').addEventListener('click', function () {
+            const template = document.getElementById('kleur-template');
+            const newKleur = template.cloneNode(true);
+            newKleur.classList.remove('hidden');
+            newKleur.removeAttribute('id');
+            newKleur.setAttribute('id', `kleurvariant-${kleurIndex}`);
 
-        newKleur.querySelectorAll('input').forEach(input => {
-            const newId = `${input.name.replace('[]', '')}_${kleurIndex}`;
-            input.setAttribute('id', newId);
-            const label = newKleur.querySelector(`label[for="${input.name.replace('[]', '')}"]`);
-            if (label) {
-                label.setAttribute('for', newId);
+            newKleur.querySelectorAll('input').forEach(input => {
+                const newId = `${input.name.replace('[]', '')}_${kleurIndex}`;
+                input.setAttribute('id', newId);
+                const label = newKleur.querySelector(`label[for="${input.name.replace('[]', '')}"]`);
+                if (label) {
+                    label.setAttribute('for', newId);
+                }
+                // Zet required attribuut voor alle inputs behalve de verwijderknop
+                if (input.type !== 'button') {
+                    input.required = true;
+                }
+            });
+
+            newKleur.querySelector('.verwijder-kleur').addEventListener('click', function () {
+                newKleur.remove();
+                // Update index na verwijdering
+                kleurIndex = document.querySelectorAll('.kleurvariant').length;
+            });
+
+            document.getElementById('kleurvarianten-container').appendChild(newKleur);
+            kleurIndex++;
+        });
+
+        document.querySelectorAll('.verwijder-kleur').forEach(button => {
+            button.addEventListener('click', function () {
+                this.closest('.kleurvariant').remove();
+                // Update index na verwijdering
+                kleurIndex = document.querySelectorAll('.kleurvariant').length;
+            });
+        });
+
+        // Voeg een event listener toe voor het formulier
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const kleurVarianten = document.querySelectorAll('.kleurvariant');
+            let heeftGeldigeVarianten = false;
+
+            kleurVarianten.forEach(variant => {
+                const naam = variant.querySelector('input[name="kleur_naam[]"]').value;
+                const foto = variant.querySelector('input[name="kleur_foto[]"]').files[0];
+                const hoverFoto = variant.querySelector('input[name="kleur_hover_foto[]"]').files[0];
+
+                if (naam.trim() && foto && hoverFoto) {
+                    heeftGeldigeVarianten = true;
+                }
+            });
+
+            if (!heeftGeldigeVarianten) {
+                e.preventDefault();
+                alert('Vul ten minste één volledige kleurvariant in.');
             }
-            // Zet required attribuut voor alle inputs behalve de verwijderknop
-            if (input.type !== 'button') {
-                input.required = true;
-            }
-        });
-
-        newKleur.querySelector('.verwijder-kleur').addEventListener('click', function() {
-            newKleur.remove();
-            // Update index na verwijdering
-            kleurIndex = document.querySelectorAll('.kleurvariant').length;
-        });
-
-        document.getElementById('kleurvarianten-container').appendChild(newKleur);
-        kleurIndex++;
-    });
-
-    document.querySelectorAll('.verwijder-kleur').forEach(button => {
-        button.addEventListener('click', function() {
-            this.closest('.kleurvariant').remove();
-            // Update index na verwijdering
-            kleurIndex = document.querySelectorAll('.kleurvariant').length;
         });
     });
-
-    // Voeg een event listener toe voor het formulier
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const kleurVarianten = document.querySelectorAll('.kleurvariant');
-        let heeftGeldigeVarianten = false;
-
-        kleurVarianten.forEach(variant => {
-            const naam = variant.querySelector('input[name="kleur_naam[]"]').value;
-            const foto = variant.querySelector('input[name="kleur_foto[]"]').files[0];
-            const hoverFoto = variant.querySelector('input[name="kleur_hover_foto[]"]').files[0];
-
-            if (naam.trim() && foto && hoverFoto) {
-                heeftGeldigeVarianten = true;
-            }
-        });
-
-        if (!heeftGeldigeVarianten) {
-            e.preventDefault();
-            alert('Vul ten minste één volledige kleurvariant in.');
-        }
-    });
-});
 </script>
 {% endblock %}

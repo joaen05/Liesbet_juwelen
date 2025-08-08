@@ -18,8 +18,8 @@
             <div>
                 <label for="prijs" class="block text-sm font-medium text-gray-700 mb-1">Prijs*</label>
                 <input type="number" id="prijs" name="prijs" step="0.01" min="0" required
-                       value="{{ "%.2f"|format(product.prijs) }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                       value="{{ " %.2f"|format(product.prijs) }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
         </div>
 
@@ -29,7 +29,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 <option value="">Selecteer een categorie</option>
                 {% for categorie in categorieen %}
-                <option value="{{ categorie.id }}" {% if categorie.id == product.categorie_id %}selected{% endif %}>
+                <option value="{{ categorie.id }}" {% if categorie.id== product.categorie_id %}selected{% endif %}>
                     {{ categorie.naam }}
                 </option>
                 {% endfor %}
@@ -51,15 +51,18 @@
             </div>
 
             {% for kleur in kleuren %}
-            <div id="kleurvariant-{{ loop.index0 }}" class="kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+            <div id="kleurvariant-{{ loop.index0 }}"
+                 class="kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
                 <div>
-                    <label for="kleur_naam_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
+                    <label for="kleur_naam_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur
+                        naam*</label>
                     <input type="text" id="kleur_naam_{{ loop.index0 }}" name="kleur_naam[]" required
                            value="{{ kleur.kleur_naam }}"
                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
-                    <label for="kleur_foto_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur foto</label>
+                    <label for="kleur_foto_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur
+                        foto</label>
                     <input type="file" id="kleur_foto_{{ loop.index0 }}" name="kleur_foto[]" accept="image/*"
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     {% if kleur.foto %}
@@ -68,21 +71,25 @@
                     {% endif %}
                 </div>
                 <div>
-                    <label for="kleur_hover_foto_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Hover foto</label>
-                    <input type="file" id="kleur_hover_foto_{{ loop.index0 }}" name="kleur_hover_foto[]" accept="image/*"
+                    <label for="kleur_hover_foto_{{ loop.index0 }}"
+                           class="block text-sm font-medium text-gray-700 mb-1">Hover foto</label>
+                    <input type="file" id="kleur_hover_foto_{{ loop.index0 }}" name="kleur_hover_foto[]"
+                           accept="image/*"
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     {% if kleur.hover_foto %}
                     <p class="text-xs text-gray-500 mt-1">Huidig: {{ kleur.hover_foto }}</p>
                     <input type="hidden" name="oude_hover_foto_{{ loop.index0 }}" value="{{ kleur.hover_foto }}">
                     {% endif %}
                 </div>
-                <button type="button" class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
+                <button type="button"
+                        class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
                     Verwijder deze kleur
                 </button>
             </div>
             {% endfor %}
 
-            <div id="kleur-template" class="hidden kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+            <div id="kleur-template"
+                 class="hidden kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
                     <input type="text" name="kleur_naam[]"
@@ -98,7 +105,8 @@
                     <input type="file" name="kleur_hover_foto[]" accept="image/*"
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
-                <button type="button" class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
+                <button type="button"
+                        class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
                     Verwijder deze kleur
                 </button>
             </div>
@@ -124,7 +132,8 @@
                 <p class="text-sm text-gray-500" id="alert-message"></p>
             </div>
             <div class="items-center px-4 py-3">
-                <button id="alert-ok-button" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                <button id="alert-ok-button"
+                        class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
                     OK
                 </button>
             </div>
@@ -133,7 +142,7 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         let kleurIndex = document.querySelectorAll('.kleurvariant').length - 1; // -1 omdat de template ook meetelt
 
         // Functie om de aangepaste alert weer te geven
@@ -143,13 +152,13 @@
             messageElement.textContent = message;
             modal.classList.remove('hidden');
 
-            document.getElementById('alert-ok-button').onclick = function() {
+            document.getElementById('alert-ok-button').onclick = function () {
                 modal.classList.add('hidden');
             };
         }
 
         // Voeg een nieuwe kleurvariant toe
-        document.getElementById('voeg-kleur-toe').addEventListener('click', function() {
+        document.getElementById('voeg-kleur-toe').addEventListener('click', function () {
             const template = document.getElementById('kleur-template');
             const newKleur = template.cloneNode(true);
             newKleur.classList.remove('hidden');
@@ -172,7 +181,7 @@
             });
 
             // Voeg event listener toe voor de verwijderknop
-            newKleur.querySelector('.verwijder-kleur').addEventListener('click', function() {
+            newKleur.querySelector('.verwijder-kleur').addEventListener('click', function () {
                 if (confirm('Weet je zeker dat je deze kleurvariant wilt verwijderen?')) {
                     newKleur.remove();
                 }
@@ -183,7 +192,7 @@
 
         // Voeg event listeners toe voor bestaande verwijderknoppen
         document.querySelectorAll('.verwijder-kleur').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 if (confirm('Weet je zeker dat je deze kleurvariant wilt verwijderen?')) {
                     this.closest('.kleurvariant').remove();
                 }
@@ -191,7 +200,7 @@
         });
 
         // Formulier validatie
-        document.getElementById('product-form').addEventListener('submit', function(e) {
+        document.getElementById('product-form').addEventListener('submit', function (e) {
             const kleurVarianten = document.querySelectorAll('.kleurvariant:not(.hidden)');
             let heeftGeldigeVarianten = false;
             let foutmeldingen = [];
@@ -253,9 +262,11 @@
         cursor: pointer;
         margin-top: 10px;
     }
+
     .verwijder-kleur:hover {
         text-decoration: underline;
     }
+
     .hidden {
         display: none;
     }
