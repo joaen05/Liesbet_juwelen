@@ -6,6 +6,7 @@
     <title>{% block title %}Mijn Flask App{% endblock %}</title>
     <!-- Laad Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon-32x32.png') }}">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -19,11 +20,14 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-<nav class="bg-blue-600 p-4 shadow-md rounded-b-lg sticky top-0 z-10">
+<nav class="bg-blue-600 p-1 shadow-md rounded-b-lg sticky top-0 z-10">
     <div class="container mx-auto flex flex-wrap items-center justify-between">
         <a href="{{ url_for('home') }}"
-           class="text-white text-2xl font-bold rounded-md p-2 hover:bg-blue-700 transition-colors duration-200">Jewerly
-            by Lizzy</a>
+           class="flex items-center text-white text-2xl font-bold rounded-md p-2 hover:bg-blue-700 transition-colors duration-200">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Jewelry by Lizzy Logo" class="h-12 w-auto mr-2">
+            Jewelry by Lizzy
+        </a>
+
         <div class="block lg:hidden">
             <button id="nav-toggle"
                     class="flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400 hover:text-white hover:border-white">
@@ -58,7 +62,8 @@
                         <a href="{{ url_for('producten_per_categorie', categorie='Armbanden') }}"
                            class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Armbanden</a>
                         <a href="{{ url_for('producten_per_categorie', categorie='Moeder-Dochter') }}"
-                           class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Moeder/Dochter sets</a>
+                           class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Moeder/Dochter
+                            sets</a>
                     </div>
                 </li>
                 <li>
@@ -101,15 +106,15 @@
 
 <main class="container mx-auto mt-8 p-4 flex-grow">
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="mb-4">
-                {% for category, message in messages %}
-                    <div class="px-4 py-2 rounded-md {% if category == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    {% if messages %}
+    <div class="mb-4">
+        {% for category, message in messages %}
+        <div class="px-4 py-2 rounded-md {% if category == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
 
     {% block content %}{% endblock %}
