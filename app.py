@@ -75,7 +75,7 @@ def save_image(image_file, target_size=(800, 800), quality=85):
         img.save(filepath, 'JPEG', quality=quality, optimize=True)
 
         # Retourneer relatief pad voor web toegang
-        return f"/static/uploads/{filename}"
+        return f"/uploads/{filename}"
 
     except Exception as e:
         print(f"Fout bij verwerken afbeelding: {e}")
@@ -597,9 +597,10 @@ def profiel_wachtwoord_bewerken():
             conn.close()
 
             # Configureer static files voor uploads
-@app.route('/static/uploads/<path:filename>')
+@app.route('/uploads/<path:filename>')
 def serve_uploads(filename):
     return send_from_directory('/var/data/uploads', filename)
+
 
 
 if __name__ == '__main__':
