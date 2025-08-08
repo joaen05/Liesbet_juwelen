@@ -44,7 +44,7 @@ def save_image(image_file, target_size=(800, 800), quality=85):
         return None
 
     filename = secrets.token_hex(8) + ".jpg"
-    upload_dir = os.path.join(app.root_path, 'static', 'uploads')
+    upload_dir = '/var/data/uploads'
     os.makedirs(upload_dir, exist_ok=True)
     filepath = os.path.join(upload_dir, filename)
 
@@ -596,7 +596,9 @@ def profiel_wachtwoord_bewerken():
 
             # Configureer static files voor uploads
 
-
+@app.route('/static/uploads/<filename>')
+def serve_uploaded_file(filename):
+    return send_from_directory('/var/data/uploads', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
