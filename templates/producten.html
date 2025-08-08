@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ categorie|capitalize }}{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">{{ categorie|capitalize }}</h1>
+        {% if 'ingelogd' in session and session['ingelogd'] %}
+        <a href="{{ url_for('product_toevoegen') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+            Voeg toe
+        </a>
+        {% endif %}
+    </div>
+
+    {% if producten %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in producten %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <a href="{{ url_for('product_detail', categorie=product.categorie_naam, product_id=product.id) }}">
+                {% if product.kleuren %}
+                <div class="relative group aspect-square">
+                    <img src="{{ url_for('static', filename='uploads/' + product.kleuren[0].foto) }}"
+                         alt="{{ product.naam }}"
+                         class="hoofd-foto absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0">
+                    <img src="{{ url_for('static', filename='uploads/' + product.kleuren[0].hover_foto) }}"
+                         alt="{{ product.naam }}"
+                         class="hover-foto absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                </div>
+                {% endif %}
+            </a>
+
+            <div class="p-4">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ product.naam }}</h3>
+                <p class="text-gray-600 mb-3">{{ product.beschrijving[:100] }}{% if product.beschrijving|length > 100 %}...{% endif %}</p>
+
+                {% if product.kleuren and product.kleuren|length > 1 %}
+                <div class="mb-3 flex items-center space-x-2">
+                    <span class="text-sm font-medium text-gray-700">Kleur:</span>
+                    <select class="kleur-selector p-1 text-sm border border-gray-300 rounded-md"
+                            data-product-id="{{ product.id }}">
+                        {% for kleur in product.kleuren %}
+                        <option value="{{ loop.index0 }}"
+                                data-foto="{{ kleur.foto }}"
+                                data-hover-foto="{{ kleur.hover_foto }}">
+                            {{ kleur.kleur_naam }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold text-blue-600">€{{ "%.2f"|format(product.prijs) }}</span>
+                    {% if 'ingelogd' in session and session['ingelogd'] %}
+                    <div class="flex space-x-2">
+                        <a href="{{ url_for('product_bewerken', product_id=product.id) }}"
+                           class="text-green-600 hover:text-green-800 font-medium">Bewerk</a>
+                        <form action="{{ url_for('product_verwijderen', product_id=product.id) }}" method="POST"
+                              onsubmit="return confirm('Weet je zeker dat je dit product wilt verwijderen?');">
+                            <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Verwijder</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-500 mb-4">Geen producten gevonden in deze categorie.</p>
+        {% if 'ingelogd' in session and session['ingelogd'] %}
+        <a href="{{ url_for('product_toevoegen') }}"
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+            Voeg eerste product toe
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Kleur selector functionaliteit
+    document.querySelectorAll('.kleur-selector').forEach(select => {
+        select.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const productCard = this.closest('.bg-white.rounded-lg');
+            const mainImg = productCard.querySelector('.hoofd-foto');
+            const hoverImg = productCard.querySelector('.hover-foto');
+
+            if (mainImg && hoverImg) {
+                mainImg.src = '{{ url_for("static", filename="uploads/") }}' + selectedOption.dataset.foto;
+                hoverImg.src = '{{ url_for("static", filename="uploads/") }}' + selectedOption.dataset.hoverFoto;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

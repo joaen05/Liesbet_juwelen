@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Ketting toevoegen{% endblock %}
+{% block title %}Product toevoegen{% endblock %}
 
 {% block content %}
 <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Ketting toevoegen</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Product toevoegen</h1>
 
     <form method="POST" enctype="multipart/form-data" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -19,6 +19,17 @@
                 <input type="number" id="prijs" name="prijs" step="0.01" min="0" required
                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
+        </div>
+
+        <div>
+            <label for="categorie_id" class="block text-sm font-medium text-gray-700 mb-1">Categorie*</label>
+            <select id="categorie_id" name="categorie_id" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Selecteer een categorie</option>
+                {% for categorie in categorieen %}
+                <option value="{{ categorie.id }}">{{ categorie.naam }}</option>
+                {% endfor %}
+            </select>
         </div>
 
         <div>
@@ -76,11 +87,11 @@
         </div>
 
         <div class="flex justify-end space-x-4 pt-4">
-            <a href="{{ url_for('kettingen') }}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            <a href="{{ url_for('home') }}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                 Annuleren
             </a>
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Ketting toevoegen
+                Product toevoegen
             </button>
         </div>
     </form>
@@ -88,37 +99,66 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let kleurIndex = document.querySelectorAll('.kleurvariant').length;
+    let kleurIndex = document.querySelectorAll('.kleurvariant').length;
 
-        document.getElementById('voeg-kleur-toe').addEventListener('click', function() {
-            const template = document.getElementById('kleur-template');
-            const newKleur = template.cloneNode(true);
-            newKleur.classList.remove('hidden');
-            newKleur.removeAttribute('id');
-            newKleur.setAttribute('id', `kleurvariant-${kleurIndex}`);
+    document.getElementById('voeg-kleur-toe').addEventListener('click', function() {
+        const template = document.getElementById('kleur-template');
+        const newKleur = template.cloneNode(true);
+        newKleur.classList.remove('hidden');
+        newKleur.removeAttribute('id');
+        newKleur.setAttribute('id', `kleurvariant-${kleurIndex}`);
 
-            newKleur.querySelectorAll('input').forEach(input => {
-                const newId = `${input.name.replace('[]', '')}_${kleurIndex}`;
-                input.setAttribute('id', newId);
-                const label = newKleur.querySelector(`label[for="${input.name.replace('[]', '')}"]`);
-                if (label) {
-                     label.setAttribute('for', newId);
-                }
-            });
-
-            newKleur.querySelector('.verwijder-kleur').addEventListener('click', function() {
-                newKleur.remove();
-            });
-
-            document.getElementById('kleurvarianten-container').appendChild(newKleur);
-            kleurIndex++;
+        newKleur.querySelectorAll('input').forEach(input => {
+            const newId = `${input.name.replace('[]', '')}_${kleurIndex}`;
+            input.setAttribute('id', newId);
+            const label = newKleur.querySelector(`label[for="${input.name.replace('[]', '')}"]`);
+            if (label) {
+                label.setAttribute('for', newId);
+            }
+            // Zet required attribuut voor alle inputs behalve de verwijderknop
+            if (input.type !== 'button') {
+                input.required = true;
+            }
         });
 
-        document.querySelectorAll('.verwijder-kleur').forEach(button => {
-            button.addEventListener('click', function() {
-                this.closest('.kleurvariant').remove();
-            });
+        newKleur.querySelector('.verwijder-kleur').addEventListener('click', function() {
+            newKleur.remove();
+            // Update index na verwijdering
+            kleurIndex = document.querySelectorAll('.kleurvariant').length;
+        });
+
+        document.getElementById('kleurvarianten-container').appendChild(newKleur);
+        kleurIndex++;
+    });
+
+    document.querySelectorAll('.verwijder-kleur').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.kleurvariant').remove();
+            // Update index na verwijdering
+            kleurIndex = document.querySelectorAll('.kleurvariant').length;
         });
     });
+
+    // Voeg een event listener toe voor het formulier
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const kleurVarianten = document.querySelectorAll('.kleurvariant');
+        let heeftGeldigeVarianten = false;
+
+        kleurVarianten.forEach(variant => {
+            const naam = variant.querySelector('input[name="kleur_naam[]"]').value;
+            const foto = variant.querySelector('input[name="kleur_foto[]"]').files[0];
+            const hoverFoto = variant.querySelector('input[name="kleur_hover_foto[]"]').files[0];
+
+            if (naam.trim() && foto && hoverFoto) {
+                heeftGeldigeVarianten = true;
+            }
+        });
+
+        if (!heeftGeldigeVarianten) {
+            e.preventDefault();
+            alert('Vul ten minste één volledige kleurvariant in.');
+        }
+    });
+});
 </script>
 {% endblock %}

@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Product bewerken{% endblock %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Product bewerken</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6" id="product-form">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="naam" class="block text-sm font-medium text-gray-700 mb-1">Naam*</label>
+                <input type="text" id="naam" name="naam" required
+                       value="{{ product.naam }}"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div>
+                <label for="prijs" class="block text-sm font-medium text-gray-700 mb-1">Prijs*</label>
+                <input type="number" id="prijs" name="prijs" step="0.01" min="0" required
+                       value="{{ "%.2f"|format(product.prijs) }}"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div>
+            <label for="categorie_id" class="block text-sm font-medium text-gray-700 mb-1">Categorie*</label>
+            <select id="categorie_id" name="categorie_id" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Selecteer een categorie</option>
+                {% for categorie in categorieen %}
+                <option value="{{ categorie.id }}" {% if categorie.id == product.categorie_id %}selected{% endif %}>
+                    {{ categorie.naam }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="beschrijving" class="block text-sm font-medium text-gray-700 mb-1">Beschrijving*</label>
+            <textarea id="beschrijving" name="beschrijving" rows="4" required
+                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">{{ product.beschrijving }}</textarea>
+        </div>
+
+        <div id="kleurvarianten-container">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-medium text-gray-700">Kleurvarianten</h3>
+                <button type="button" id="voeg-kleur-toe" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    + Voeg kleur toe
+                </button>
+            </div>
+
+            {% for kleur in kleuren %}
+            <div id="kleurvariant-{{ loop.index0 }}" class="kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+                <div>
+                    <label for="kleur_naam_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
+                    <input type="text" id="kleur_naam_{{ loop.index0 }}" name="kleur_naam[]" required
+                           value="{{ kleur.kleur_naam }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="kleur_foto_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Kleur foto</label>
+                    <input type="file" id="kleur_foto_{{ loop.index0 }}" name="kleur_foto[]" accept="image/*"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    {% if kleur.foto %}
+                    <p class="text-xs text-gray-500 mt-1">Huidig: {{ kleur.foto }}</p>
+                    <input type="hidden" name="oude_foto_{{ loop.index0 }}" value="{{ kleur.foto }}">
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="kleur_hover_foto_{{ loop.index0 }}" class="block text-sm font-medium text-gray-700 mb-1">Hover foto</label>
+                    <input type="file" id="kleur_hover_foto_{{ loop.index0 }}" name="kleur_hover_foto[]" accept="image/*"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    {% if kleur.hover_foto %}
+                    <p class="text-xs text-gray-500 mt-1">Huidig: {{ kleur.hover_foto }}</p>
+                    <input type="hidden" name="oude_hover_foto_{{ loop.index0 }}" value="{{ kleur.hover_foto }}">
+                    {% endif %}
+                </div>
+                <button type="button" class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
+                    Verwijder deze kleur
+                </button>
+            </div>
+            {% endfor %}
+
+            <div id="kleur-template" class="hidden kleurvariant grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 bg-gray-50 rounded-md">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kleur naam*</label>
+                    <input type="text" name="kleur_naam[]"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kleur foto*</label>
+                    <input type="file" name="kleur_foto[]" accept="image/*"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hover foto*</label>
+                    <input type="file" name="kleur_hover_foto[]" accept="image/*"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+                <button type="button" class="verwijder-kleur text-red-600 hover:text-red-800 text-sm font-medium col-span-3 text-right">
+                    Verwijder deze kleur
+                </button>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-4 pt-4">
+            <a href="{{ url_for('producten_per_categorie', categorie=get_categorie_naam(product.categorie_id)) }}"
+               class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Annuleren
+            </a>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Product bijwerken
+            </button>
+        </div>
+    </form>
+</div>
+
+<div id="custom-alert-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="alert-title">Bericht</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500" id="alert-message"></p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="alert-ok-button" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let kleurIndex = document.querySelectorAll('.kleurvariant').length - 1; // -1 omdat de template ook meetelt
+
+        // Functie om de aangepaste alert weer te geven
+        function showCustomAlert(message) {
+            const modal = document.getElementById('custom-alert-modal');
+            const messageElement = document.getElementById('alert-message');
+            messageElement.textContent = message;
+            modal.classList.remove('hidden');
+
+            document.getElementById('alert-ok-button').onclick = function() {
+                modal.classList.add('hidden');
+            };
+        }
+
+        // Voeg een nieuwe kleurvariant toe
+        document.getElementById('voeg-kleur-toe').addEventListener('click', function() {
+            const template = document.getElementById('kleur-template');
+            const newKleur = template.cloneNode(true);
+            newKleur.classList.remove('hidden');
+            newKleur.removeAttribute('id');
+
+            kleurIndex++;
+            newKleur.setAttribute('id', `kleurvariant-${kleurIndex}`);
+
+            // Voeg required attributen toe aan de inputs
+            const inputs = newKleur.querySelectorAll('input');
+            inputs.forEach(input => {
+                const newId = `${input.name.replace('[]', '')}_${kleurIndex}`;
+                input.setAttribute('id', newId);
+                input.required = true;
+
+                const label = newKleur.querySelector(`label[for="${input.name.replace('[]', '')}"]`);
+                if (label) {
+                    label.setAttribute('for', newId);
+                }
+            });
+
+            // Voeg event listener toe voor de verwijderknop
+            newKleur.querySelector('.verwijder-kleur').addEventListener('click', function() {
+                if (confirm('Weet je zeker dat je deze kleurvariant wilt verwijderen?')) {
+                    newKleur.remove();
+                }
+            });
+
+            document.getElementById('kleurvarianten-container').appendChild(newKleur);
+        });
+
+        // Voeg event listeners toe voor bestaande verwijderknoppen
+        document.querySelectorAll('.verwijder-kleur').forEach(button => {
+            button.addEventListener('click', function() {
+                if (confirm('Weet je zeker dat je deze kleurvariant wilt verwijderen?')) {
+                    this.closest('.kleurvariant').remove();
+                }
+            });
+        });
+
+        // Formulier validatie
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            const kleurVarianten = document.querySelectorAll('.kleurvariant:not(.hidden)');
+            let heeftGeldigeVarianten = false;
+            let foutmeldingen = [];
+
+            // Controleer basisvelden
+            if (!document.getElementById('naam').value.trim()) {
+                foutmeldingen.push('Naam is verplicht');
+            }
+            if (!document.getElementById('prijs').value) {
+                foutmeldingen.push('Prijs is verplicht');
+            }
+            if (!document.getElementById('categorie_id').value) {
+                foutmeldingen.push('Categorie is verplicht');
+            }
+            if (!document.getElementById('beschrijving').value.trim()) {
+                foutmeldingen.push('Beschrijving is verplicht');
+            }
+
+            // Controleer kleurvarianten
+            if (kleurVarianten.length === 0) {
+                foutmeldingen.push('Voeg ten minste één kleurvariant toe');
+            } else {
+                kleurVarianten.forEach((variant, index) => {
+                    const naam = variant.querySelector('input[name="kleur_naam[]"]')?.value;
+                    const fotoInput = variant.querySelector('input[name="kleur_foto[]"]');
+                    const hoverFotoInput = variant.querySelector('input[name="kleur_hover_foto[]"]');
+                    const oudeFotoInput = variant.querySelector('input[name^="oude_foto_"]');
+                    const oudeHoverFotoInput = variant.querySelector('input[name^="oude_hover_foto_"]');
+
+                    const heeftFoto = (fotoInput && fotoInput.files.length > 0) || (oudeFotoInput && oudeFotoInput.value.trim() !== '');
+                    const heeftHoverFoto = (hoverFotoInput && hoverFotoInput.files.length > 0) || (oudeHoverFotoInput && oudeHoverFotoInput.value.trim() !== '');
+
+                    if (!naam || !naam.trim()) {
+                        foutmeldingen.push(`Kleurvariant ${index + 1}: naam is verplicht`);
+                    }
+                    if (!heeftFoto) {
+                        foutmeldingen.push(`Kleurvariant ${index + 1}: kleurfoto is verplicht`);
+                    }
+                    if (!heeftHoverFoto) {
+                        foutmeldingen.push(`Kleurvariant ${index + 1}: hoverfoto is verplicht`);
+                    }
+
+                    if (naam && naam.trim() && heeftFoto && heeftHoverFoto) {
+                        heeftGeldigeVarianten = true;
+                    }
+                });
+            }
+
+            if (foutmeldingen.length > 0 || !heeftGeldigeVarianten) {
+                e.preventDefault();
+                showCustomAlert(foutmeldingen.join('\n') || 'Vul ten minste één volledige kleurvariant in.');
+            }
+        });
+    });
+</script>
+
+<style>
+    .verwijder-kleur {
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .verwijder-kleur:hover {
+        text-decoration: underline;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
