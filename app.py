@@ -15,7 +15,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'jouw_supergeheime_sleutel_hier')
-
+app.config['UPLOAD_FOLDER'] = '/var/data/uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Get the database URL from environment variables
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
