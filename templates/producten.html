@@ -20,10 +20,10 @@
             <a href="{{ url_for('product_detail', categorie=product.categorie_naam, product_id=product.id) }}">
                 {% if product.kleuren %}
                 <div class="relative group aspect-square">
-                    <img src="{{ url_for('static', filename='uploads/' + product.kleuren[0].foto) }}"
+                    <img src="{{ url_for('serve_uploaded_file', filename=product.kleuren[0].foto) }}"
                          alt="{{ product.naam }}"
                          class="hoofd-foto absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0">
-                    <img src="{{ url_for('static', filename='uploads/' + product.kleuren[0].hover_foto) }}"
+                    <img src="{{ url_for('serve_uploaded_file', filename=product.kleuren[0].hover_foto) }}"
                          alt="{{ product.naam }}"
                          class="hover-foto absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 </div>
@@ -82,7 +82,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Kleur selector functionaliteit
     document.querySelectorAll('.kleur-selector').forEach(select => {
         select.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
@@ -91,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const hoverImg = productCard.querySelector('.hover-foto');
 
             if (mainImg && hoverImg) {
-                mainImg.src = '{{ url_for("static", filename="uploads/") }}' + selectedOption.dataset.foto;
-                hoverImg.src = '{{ url_for("static", filename="uploads/") }}' + selectedOption.dataset.hoverFoto;
+                mainImg.src = '{{ url_for("serve_uploaded_file", filename="") }}' + selectedOption.dataset.foto;
+                hoverImg.src = '{{ url_for("serve_uploaded_file", filename="") }}' + selectedOption.dataset.hoverFoto;
             }
         });
     });

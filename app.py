@@ -596,9 +596,23 @@ def profiel_wachtwoord_bewerken():
 
             # Configureer static files voor uploads
 
-@app.route('/static/uploads/<filename>')
+
+@app.route('/static/uploads/<path:filename>')  # Let op: <path:filename> i.p.v. <filename>
 def serve_uploaded_file(filename):
-    return send_from_directory('/var/data/uploads', filename)
+    # Controleer of het bestand bestaat
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(file_path):
+        print(f"🚨 Bestand niet gevonden: {file_path}")  # Debug logging
+        abort(404)
+
+    # Voeg caching headers toe voor betere performance
+    response = send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        filename,
+        mimetype='image/jpeg'
+    )
+    response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
