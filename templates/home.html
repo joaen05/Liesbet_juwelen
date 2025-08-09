@@ -4,9 +4,31 @@
 
 {% block content %}
 <div class="bg-white p-8 rounded-lg shadow-md">
-    <h1 class="text-4xl font-bold text-gray-800 mb-4">Welkom op de Homepagina!</h1>
-    <p class="text-gray-700 text-lg">Dit is de startpagina van je Flask-applicatie met een mooie navigatiebalk.</p>
-    <p class="mt-4 text-gray-600">Gebruik de navigatiebalk hierboven om naar de verschillende testpagina's te gaan.</p>
+    <h1 class="text-4xl font-bold text-gray-800 mb-6">Over Jewelry by Lizzy</h1>
+    <p class="text-gray-700 mb-4">
+        Welkom bij <strong>Jewelry by Lizzy</strong>, mijn creatieve wereld vol kleur, detail en persoonlijkheid.
+        Ik ben Liesbet, en sinds 2019 gepassioneerd bezig met het ontwerpen en maken van juwelen.
+        Wat begon als een leuke hobby aan de keukentafel, groeide via gezellige “home party’s” en bijeenkomsten bij mij
+        thuis uit tot mijn eigen kleine winkeltje.
+    </p>
+    <p class="text-gray-700 mb-4">
+        Voor mijn juwelen werk ik met hoogwaardige materialen zoals Miyuki kralen, polymeerklei en zorgvuldig gekozen
+        onderdelen.
+        Elk stuk wordt met de hand gemaakt, met oog voor detail en draagcomfort.
+        Al mijn juwelen zijn hypoallergeen, zodat iedereen ze zorgeloos kan dragen.
+    </p>
+    <p class="text-gray-700 mb-4">
+        Ik vind het heerlijk om samen met jou iets te creëren dat helemaal bij je past.
+        Wil je een kleur, lengte of detail aanpassen?
+        Dan bespreken we dat gewoon samen — zo wordt jouw juweel echt uniek.
+    </p>
+    <p class="text-gray-700 mb-6">
+        Je bent welkom in mijn winkeltje in Duffel, op
+        <a href="{{ url_for('contact') }}" class="text-blue-600 underline">afspraak</a>, om de collectie te ontdekken,
+        inspiratie op te doen voor jouw zelf samengesteld paar oorbellen of om samen iets nieuws te bedenken.
+    </p>
+    <p class="text-lg font-semibold text-pink-600">
+        Jewelry by Lizzy – handgemaakt met liefde, speciaal voor jou.
+    </p>
 </div>
 {% endblock %}
-```html
