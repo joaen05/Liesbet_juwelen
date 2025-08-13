@@ -12,25 +12,24 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Voeg toe aan bestaande style tag */
         input:read-only {
             background-color: #f3f4f6;
             cursor: not-allowed;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-<nav class="bg-blue-600 p-1 shadow-md rounded-b-lg sticky top-0 z-10">
+<body class="bg-gray-100 min-h-screen flex flex-col text-center">
+<nav class="bg-[#F08784] p-1 shadow-md rounded-b-lg sticky top-0 z-10">
     <div class="container mx-auto flex flex-wrap items-center justify-between">
         <a href="{{ url_for('home') }}"
-           class="flex items-center text-white text-2xl font-bold rounded-md p-2 hover:bg-blue-700 transition-colors duration-200">
+           class="flex items-center text-white text-2xl font-bold rounded-md p-2 hover:bg-[#D8726F] transition-colors duration-200 text-center">
             <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Jewelry by Lizzy Logo" class="h-12 w-auto mr-2">
             Jewelry by Lizzy
         </a>
 
         <div class="block lg:hidden">
             <button id="nav-toggle"
-                    class="flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400 hover:text-white hover:border-white">
+                    class="flex items-center px-3 py-2 border rounded text-[#F6D1CF] border-[#F6D1CF] hover:text-white hover:border-white">
                 <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>
                     Menu</title>
                     <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-6z"/>
@@ -38,10 +37,10 @@
             </button>
         </div>
         <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden" id="nav-content">
-            <ul class="text-lg lg:flex-grow lg:flex lg:justify-end">
+            <ul class="text-lg lg:flex-grow lg:flex lg:justify-end text-center w-full">
                 <li class="relative group">
                     <button id="producten-dropdown-toggle"
-                            class="flex items-center gap-1 mt-4 lg:mt-0 text-blue-200 hover:text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none">
+                            class="flex items-center gap-1 mt-4 lg:mt-0 text-[#F6D1CF] hover:text-white p-2 rounded-md hover:bg-[#D8726F] transition-colors duration-200 focus:outline-none mx-auto">
                         Producten
                         <svg id="producten-arrow" class="h-4 w-4 transform transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -52,7 +51,7 @@
                     </button>
 
                     <div id="producten-dropdown-menu"
-                         class="absolute hidden bg-white text-gray-800 rounded-lg shadow-xl py-2 mt-2 z-20 w-56 border border-gray-200 transition-all duration-200">
+                         class="absolute hidden bg-white text-gray-800 rounded-lg shadow-xl py-2 mt-2 z-20 w-56 border border-gray-200 transition-all duration-200 text-center">
                         <a href="{{ url_for('producten_per_categorie', categorie='oorbellen') }}"
                            class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Oorbellen</a>
                         <a href="{{ url_for('producten_per_categorie', categorie='Kinderoorbellen') }}"
@@ -62,18 +61,17 @@
                         <a href="{{ url_for('producten_per_categorie', categorie='Armbanden') }}"
                            class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Armbanden</a>
                         <a href="{{ url_for('producten_per_categorie', categorie='Moeder-Dochter') }}"
-                           class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Moeder/Dochter
-                            sets</a>
+                           class="block px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">Moeder/Dochter sets</a>
                     </div>
                 </li>
                 <li>
                     <a href="{{ url_for('contact') }}"
-                       class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-6 p-2 rounded-md hover:bg-blue-700 transition-colors duration-200">Contact</a>
+                       class="block mt-4 lg:inline-block lg:mt-0 text-[#F6D1CF] hover:text-white mr-6 p-2 rounded-md hover:bg-[#D8726F] transition-colors duration-200">Contact</a>
                 </li>
                 {% if 'ingelogd' in session and session['ingelogd'] %}
                 <li class="relative group">
                     <button id="user-dropdown-toggle"
-                            class="flex items-center gap-1 mt-4 lg:mt-0 text-white hover:text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none">
+                            class="flex items-center gap-1 mt-4 lg:mt-0 text-white hover:text-white p-2 rounded-md hover:bg-[#D8726F] transition-colors duration-200 focus:outline-none mx-auto">
                         {{ session['gebruikersnaam'] }}
                         <svg id="user-arrow" class="h-4 w-4 transform transition-transform duration-200"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -84,9 +82,9 @@
                     </button>
 
                     <div id="user-dropdown-menu"
-                         class="absolute right-0 hidden bg-white text-gray-800 rounded-lg shadow-xl py-2 mt-2 z-20 w-48 border border-gray-200 transition-all duration-200">
+                         class="absolute right-0 hidden bg-white text-gray-800 rounded-lg shadow-xl py-2 mt-2 z-20 w-48 border border-gray-200 transition-all duration-200 text-center">
                         <a href="{{ url_for('profiel') }}"
-                           class="flex items-center px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200">
+                           class="flex items-center px-5 py-2 hover:bg-gray-100 hover:pl-6 rounded-md transition-all duration-200 justify-center">
                             <span>Gegevens bewerken</span>
                             <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +102,7 @@
     </div>
 </nav>
 
-<main class="container mx-auto mt-8 p-4 flex-grow">
+<main class="container mx-auto mt-8 p-4 flex-grow text-center">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="mb-4">
