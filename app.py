@@ -109,6 +109,8 @@ def home():
 def producten_per_categorie(categorie):
     conn = get_db_connection()
     producten_lijst = []
+    zoekterm = request.args.get('q', '').strip().lower()  # <--- zoekterm ophalen
+
     if conn:
         try:
             cursor = conn.cursor(cursor_factory=DictCursor)
@@ -123,17 +125,16 @@ def producten_per_categorie(categorie):
 
             categorie_id = categorie_result['id']
 
-            # Haal producten op met JOIN op categorieen voor betrouwbaarheid
+            # Haal producten op
             cursor.execute("""
                 SELECT p.*, c.naam AS categorie_naam 
                 FROM producten p
                 JOIN categorieen c ON p.categorie_id = c.id
-                WHERE c.id = %s 
+                WHERE c.id = %s
                 ORDER BY p.gemaakt_op DESC
             """, (categorie_id,))
             producten_db = cursor.fetchall()
 
-            # Voor elk product de kleuren ophalen
             for product in producten_db:
                 cursor.execute("""
                     SELECT * FROM product_kleuren 
@@ -146,9 +147,17 @@ def producten_per_categorie(categorie):
                 product_dict['kleuren'] = kleuren
                 producten_lijst.append(product_dict)
 
+            # Filter op zoekterm
+            if zoekterm:
+                producten_lijst = [
+                    p for p in producten_lijst
+                    if zoekterm in p['naam'].lower()
+                ]
+
             return render_template('producten.html',
                                    producten=producten_lijst,
-                                   categorie=categorie)
+                                   categorie=categorie,
+                                   zoekterm=zoekterm)  # zoekterm meegeven
 
         except Exception as e:
             print(f"Database error: {e}")
@@ -160,6 +169,7 @@ def producten_per_categorie(categorie):
 
     flash('Kon geen verbinding maken met de database', 'error')
     return redirect(url_for('home'))
+
 
 
 @app.route('/producten/<categorie>/<int:product_id>')

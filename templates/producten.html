@@ -13,10 +13,18 @@
         {% endif %}
     </div>
 
+    <!-- Zoekveld -->
+    <div class="mb-6">
+        <input type="text"
+               id="zoekveld"
+               placeholder="Zoek op naam..."
+               class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
     {% if producten %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for product in producten %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="product-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300" data-naam="{{ product.naam | lower }}">
             <a href="{{ url_for('product_detail', categorie=product.categorie_naam, product_id=product.id) }}">
                 {% if product.kleuren %}
                 <div class="relative group aspect-square">
@@ -82,16 +90,33 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Kleur wisselen
     document.querySelectorAll('.kleur-selector').forEach(select => {
         select.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            const productCard = this.closest('.bg-white.rounded-lg');
+            const productCard = this.closest('.product-card');
             const mainImg = productCard.querySelector('.hoofd-foto');
             const hoverImg = productCard.querySelector('.hover-foto');
 
             if (mainImg && hoverImg) {
                 mainImg.src = '{{ url_for("serve_uploaded_file", filename="") }}' + selectedOption.dataset.foto;
                 hoverImg.src = '{{ url_for("serve_uploaded_file", filename="") }}' + selectedOption.dataset.hoverFoto;
+            }
+        });
+    });
+
+    // Live filteren op naam
+    const zoekveld = document.getElementById('zoekveld');
+    const kaarten = document.querySelectorAll('.product-card');
+
+    zoekveld.addEventListener('input', function() {
+        const term = this.value.trim().toLowerCase();
+        kaarten.forEach(card => {
+            const naam = card.dataset.naam;
+            if (naam.includes(term)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
             }
         });
     });
